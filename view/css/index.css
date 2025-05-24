@@ -1,0 +1,59 @@
+.carousel-item img {
+    height: 300px;
+    object-fit: cover;
+}
+
+.carousel-indicators {
+    margin-bottom: 0;
+}
+
+.carousel-indicators button {
+    background-color: #000;
+    opacity: 0.5;
+}
+
+.carousel-indicators button.active {
+    opacity: 1;
+}
+
+.carousel-item {
+    height: 400px;
+    /* Fixed height for banner */
+    background-color: #f8f9fa;
+    /* Light background for empty spaces */
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Changed from cover to contain */
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.carousel-indicators {
+    margin-bottom: 0;
+    z-index: 2;
+}
+
+.carousel-indicators button {
+    background-color: #000;
+    opacity: 0.5;
+}
+
+.carousel-indicators button.active {
+    opacity: 1;
+}
+
+/* Style for carousel controls */
+.carousel-control-prev,
+.carousel-control-next {
+    background: rgba(0, 0, 0, 0.2);
+    width: 10%;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background: rgba(0, 0, 0, 0.3);
+}

@@ -1,0 +1,15 @@
+{
+    "name": "pc/book-store",
+    "autoload": {
+        "psr-4": {
+            "Pc\\BookStore\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "KhangVBN",
+            "email": "khangvu782004@gmail.com"
+        }
+    ],
+    "require": {}
+}
