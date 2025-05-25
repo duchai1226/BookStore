@@ -1,11 +1,11 @@
 /* Navigation styling */
 .navbar {
-    background-color: white !important;
+    background-color: #054f9e !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .navbar-brand {
-    color: var(--secondary-color) !important;
+    color: white;
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -23,7 +23,7 @@
 
 .nav-link,
 .navbar-nav .nav-link.active {
-    color: #333 !important;
+    color: #fffdfd !important;
 }
 
 /* Sticky navigation */
@@ -33,4 +33,20 @@
     z-index: 1020;
     background-color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #041d38 !important;
+    color: white !important;
+}
+
+.dropdown-item.active {
+    background-color: #3AAA35 !important;
+    color: white !important;
+}
+
+.dropdown-menu {
+    background-color: #054f9e;
+    border: none;
 }

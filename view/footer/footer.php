@@ -1,9 +1,9 @@
 <!-- Footer -->
 
 <head>
-    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="footer/footer.css">
 </head>
-<footer class="bg-dark text-light py-5">
+<footer class="text-light py-5">
     <div class="container">
         <div class="row">
             <div class="col-md-3 mb-4">

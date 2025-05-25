@@ -1,7 +1,7 @@
 <!-- Promotion Banner -->
 
 <head>
-    <link rel="stylesheet" href="banner.css">
+    <link rel="stylesheet" href="banner/banner.css">
 </head>
 <div class="promo-banner">
     <div class="container-fluid p-0">

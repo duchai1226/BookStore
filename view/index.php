@@ -18,19 +18,31 @@ $searchController = new SearchController($bookModel);
 // Check if search is being performed
 $searchKeyword = isset($_GET['search']) ? trim($_GET['search']) : '';
 $selectedCategory = null;
+
 if (!empty($searchKeyword)) {
+    // Log search query for debugging
+    error_log("Searching for: " . $searchKeyword);
+
+    // Use SearchController to perform search
     $searchResult = $searchController->search($searchKeyword, $page, $perPage);
     $books = $searchResult['books'];
     $totalPages = $searchResult['totalPages'];
     $totalBooks = $searchResult['totalBooks'];
+
+    // Set page title to reflect search
+    $pageTitle = 'Search Results for "' . htmlspecialchars($searchKeyword) . '"';
 } else {
     // Get selected category from URL
     $selectedCategory = isset($_GET['category']) ? $_GET['category'] : null;
     $totalBooks = $bookModel->getTotalBooks($selectedCategory);
     $totalPages = ceil($totalBooks / $perPage);
+
     // Get sort parameter
     $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
     $books = $bookModel->getBooks($page, $perPage, $selectedCategory, $sort);
+
+    // Set default page title
+    $pageTitle = $selectedCategory ? htmlspecialchars($selectedCategory) . ' Books' : 'Latest Books';
 }
 
 // Get all categories
@@ -77,15 +89,14 @@ $categories = $bookModel->getAllCategories();
                         <p class="lead">Get into our Store</p>
                         <p>Here every book is a new adventure</p>
 
-                        <form class="d-flex mt-4" method="GET" action="index.php">
+                        <form class="d-flex mt-4" method="GET" action="search_page.php">
                             <input class="form-control me-2" type="search" name="search"
-                                placeholder="Find your book here..."
-                                value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                                placeholder="Find your book here..." value="">
                             <button class="btn btn-primary" type="submit">Search</button>
                         </form>
                     </div>
                     <div class="col-md-6 text-center">
-                        <img src="images/reader-illustration.png" alt="Person reading a book" class="img-fluid">
+                        <img src="images/huit/huit.png" alt="Person reading a book" class="img-fluid hero-image-small">
                     </div>
                 </div>
             </div>
@@ -119,8 +130,9 @@ $categories = $bookModel->getAllCategories();
                             <div class="p-3">
                                 <h6 class="mb-1"><?php echo htmlspecialchars($book['title']); ?></h6>
                                 <small class="text-muted d-block mb-2">By
-                                    <?php echo htmlspecialchars($book['author']); ?></small>
-                                <p class="book-price">256 Rs</p>
+                                    <?php echo htmlspecialchars($book['author']); ?>
+                                </small>
+                                <p class="card-text text-primary fw-bold">$<?php echo number_format($book['price'], 2); ?>
                             </div>
                         </div>
                     </div>
@@ -199,6 +211,12 @@ $categories = $bookModel->getAllCategories();
         include __DIR__ . '/footer/footer.php';
         ?>
 
+        <!-- Back to top button -->
+        <button id="backToTopBtn" class="btn btn-success rounded-circle back-to-top-btn" title="Go to top">
+            <i class="bi bi-arrow-up"></i>
+        </button>
+
+        <script src="js/main.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
