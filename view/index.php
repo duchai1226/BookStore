@@ -28,7 +28,9 @@ if (!empty($searchKeyword)) {
     $selectedCategory = isset($_GET['category']) ? $_GET['category'] : null;
     $totalBooks = $bookModel->getTotalBooks($selectedCategory);
     $totalPages = ceil($totalBooks / $perPage);
-    $books = $bookModel->getBooks($page, $perPage, $selectedCategory);
+    // Get sort parameter
+    $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
+    $books = $bookModel->getBooks($page, $perPage, $selectedCategory, $sort);
 }
 
 // Get all categories
@@ -41,7 +43,7 @@ $categories = $bookModel->getAllCategories();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online BookStore</title>
+    <title>TheBook.PK - Online BookStore</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/index.css">
@@ -49,126 +51,155 @@ $categories = $bookModel->getAllCategories();
 
 <body>
     <?php
-    include __DIR__ . '/navigation.php';
+    include __DIR__ . '/navigation/navigation.php';
     ?>
 
-    <!-- Hero Section -->
-    <div class="bg-light py-5">
-        <div class="container">
-            <h1>Welcome to BookStore</h1>
-            <p class="lead">Discover your next favorite book</p>
+    <!-- Action Buttons Row -->
+    <div class="container mt-2">
+        </nav>
+
+        <!-- Fixed Action Buttons -->
+        <div class="action-buttons-fixed">
+            <button class="btn btn-success rounded-pill"><i class="bi bi-cart"></i> View Cart</button>
+            <button class="btn btn-outline-success rounded-pill">Request a Book</button>
         </div>
-    </div>
 
-    <!-- Advertisement Banner -->
-    <div class="container my-4">
-        <div id="advertisementCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <?php
-                $adsDir = __DIR__ . '/images/ads/';
-                $ads = glob($adsDir . "*.{jpg,jpeg,png,gif}", GLOB_BRACE);
-                foreach ($ads as $key => $ad): ?>
-                    <button type="button" data-bs-target="#advertisementCarousel" data-bs-slide-to="<?php echo $key; ?>"
-                        <?php echo $key === 0 ? 'class="active"' : ''; ?>
-                        aria-current="<?php echo $key === 0 ? 'true' : 'false'; ?>">
-                    </button>
-                <?php endforeach; ?>
-            </div>
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 hero-text">
+                        <div class="hero-stats">
+                            <p>200+ Authors</p>
+                            <p>20k+ Books</p>
+                        </div>
+                        <h1>THE BOOK.COM</h1>
+                        <p class="lead">Get into our Store</p>
+                        <p>Here every book is a new adventure</p>
 
-            <div class="carousel-inner">
-                <?php foreach ($ads as $key => $ad):
-                    $adName = basename($ad); ?>
-                    <div class="carousel-item <?php echo $key === 0 ? 'active' : ''; ?>">
-                        <img src="images/ads/<?php echo htmlspecialchars($adName); ?>" class="d-block" alt="Advertisement">
+                        <form class="d-flex mt-4" method="GET" action="index.php">
+                            <input class="form-control me-2" type="search" name="search"
+                                placeholder="Find your book here..."
+                                value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </form>
                     </div>
-                <?php endforeach; ?>
+                    <div class="col-md-6 text-center">
+                        <img src="images/reader-illustration.png" alt="Person reading a book" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <?php
+        include __DIR__ . '/banner/banner.php';
+        ?>
+
+        <!-- Book Shelf Section -->
+        <div class="container mt-5">
+            <h2 class="section-title">Book Shelf</h2>
+
+            <div class="filter-tabs">
+                <div class="filter-tab active">New arrivals</div>
+                <div class="filter-tab">Best Selling</div>
             </div>
 
-            <?php if (count($ads) > 1): ?>
-                <button class="carousel-control-prev" type="button" data-bs-target="#advertisementCarousel"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#advertisementCarousel"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Books Section -->
-    <div class="container py-5">
-        <h2 class="mb-4">
-            <?php echo $selectedCategory ? htmlspecialchars($selectedCategory) . ' Books' : 'Latest Books'; ?>
-        </h2>
-
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-            <?php foreach ($books as $book): ?>
-                <div class="col">
-                    <div class="card h-100">
-                        <?php
-                        $imagePath = 'images/books/' . ($book['image'] ?: 'default-book.jpg');
-                        $fullImagePath = file_exists(__DIR__ . '/' . $imagePath) ? $imagePath : 'images/default-book.jpg';
-                        ?>
-                        <img src="<?php echo htmlspecialchars($fullImagePath); ?>" class="card-img-top"
-                            alt="<?php echo htmlspecialchars($book['title']); ?>" style="height: 300px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title"><?php echo htmlspecialchars($book['title']); ?></h5>
-                            <p class="card-text">By <?php echo htmlspecialchars($book['author']); ?></p>
-                            <p class="card-text text-primary fw-bold">$<?php echo number_format($book['price'], 2); ?></p>
-                            <div class="d-flex justify-content-between">
-                                <a href="book-details.php?id=<?php echo $book['id']; ?>"
-                                    class="btn btn-outline-primary">View Details</a>
-                                <button class="btn btn-success">Add to Cart</button>
+            <div class="row">
+                <?php
+                $featuredBooks = array_slice($books, 0, 4);
+                foreach ($featuredBooks as $book): ?>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="book-card h-100">
+                            <?php
+                            $imagePath = 'images/books/' . ($book['image'] ?: 'default-book.jpg');
+                            $fullImagePath = file_exists(__DIR__ . '/' . $imagePath) ? $imagePath : 'images/default-book.jpg';
+                            ?>
+                            <img src="<?php echo htmlspecialchars($fullImagePath); ?>" class="book-image"
+                                alt="<?php echo htmlspecialchars($book['title']); ?>">
+                            <div class="p-3">
+                                <h6 class="mb-1"><?php echo htmlspecialchars($book['title']); ?></h6>
+                                <small class="text-muted d-block mb-2">By
+                                    <?php echo htmlspecialchars($book['author']); ?></small>
+                                <p class="book-price">256 Rs</p>
                             </div>
                         </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="text-end mb-5">
+                <a href="#" class="view-more">View More <i class="bi bi-arrow-right"></i></a>
+            </div>
         </div>
 
-        <!-- Pagination -->
-        <?php if ($totalPages > 1): ?>
-            <nav aria-label="Page navigation" class="mt-4">
-                <ul class="pagination justify-content-center">
-                    <!-- Previous page link -->
-                    <li class="page-item <?php echo $page <= 1 ? 'disabled' : ''; ?>">
-                        <a class="page-link" href="?page=<?php echo $page - 1;
-                        echo $selectedCategory ? '&category=' . urlencode($selectedCategory) : '';
-                        echo !empty($searchKeyword) ? '&search=' . urlencode($searchKeyword) : '';
-                        ?>">Previous</a>
-                    </li>
+        <!-- Main Books Section -->
+        <div class="container py-5">
+            <h2 class="section-title">
+                <?php echo $selectedCategory ? htmlspecialchars($selectedCategory) . ' Books' : 'Latest Books'; ?>
+            </h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                <?php foreach ($books as $book): ?>
+                    <div class="col">
+                        <div class="card h-100">
+                            <?php
+                            $imagePath = 'images/books/' . ($book['image'] ?: 'default-book.jpg');
+                            $fullImagePath = file_exists(__DIR__ . '/' . $imagePath) ? $imagePath : 'images/default-book.jpg';
+                            ?>
+                            <img src="<?php echo htmlspecialchars($fullImagePath); ?>" class="card-img-top"
+                                alt="<?php echo htmlspecialchars($book['title']); ?>"
+                                style="height: 300px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo htmlspecialchars($book['title']); ?></h5>
+                                <p class="card-text">By <?php echo htmlspecialchars($book['author']); ?></p>
+                                <p class="card-text text-primary fw-bold">$<?php echo number_format($book['price'], 2); ?>
+                                </p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="book-details.php?id=<?php echo $book['id']; ?>"
+                                        class="btn btn-outline-primary">View Details</a>
+                                    <button class="btn btn-success">Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
 
-                    <!-- Page numbers -->
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <li class="page-item <?php echo $page == $i ? 'active' : ''; ?>">
-                            <a class="page-link" href="?page=<?php echo $i;
-                            echo $selectedCategory ? '&category=' . urlencode($selectedCategory) : '';
-                            echo !empty($searchKeyword) ? '&search=' . urlencode($searchKeyword) : '';
-                            ?>"><?php echo $i; ?></a>
+            <!-- Pagination -->
+            <?php if ($totalPages > 1): ?>
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <!-- Previous page link -->
+                        <li class="page-item <?php echo $page <= 1 ? 'disabled' : ''; ?>">
+                            <a class="page-link" href="?<?php
+                            echo http_build_query(array_merge($_GET, ['page' => $page - 1]));
+                            ?>">Previous</a>
                         </li>
-                    <?php endfor; ?>
 
-                    <!-- Next page link -->
-                    <li class="page-item <?php echo $page >= $totalPages ? 'disabled' : ''; ?>">
-                        <a class="page-link" href="?page=<?php echo $page + 1;
-                        echo $selectedCategory ? '&category=' . urlencode($selectedCategory) : '';
-                        echo !empty($searchKeyword) ? '&search=' . urlencode($searchKeyword) : '';
-                        ?>">Next</a>
-                    </li>
-                </ul>
-            </nav>
-        <?php endif; ?>
-    </div>
+                        <!-- Page numbers -->
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item <?php echo $page == $i ? 'active' : ''; ?>">
+                                <a class="page-link" href="?<?php
+                                echo http_build_query(array_merge($_GET, ['page' => $i]));
+                                ?>"><?php echo $i; ?></a>
+                            </li>
+                        <?php endfor; ?>
 
-    <?php
-    include __DIR__ . '/footer.php';
-    ?>
+                        <!-- Next page link -->
+                        <li class="page-item <?php echo $page >= $totalPages ? 'disabled' : ''; ?>">
+                            <a class="page-link" href="?<?php
+                            echo http_build_query(array_merge($_GET, ['page' => $page + 1]));
+                            ?>">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            <?php endif; ?>
+        </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <?php
+        include __DIR__ . '/footer/footer.php';
+        ?>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

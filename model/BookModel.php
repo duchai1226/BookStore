@@ -120,24 +120,46 @@ class BookModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getBooks($page = 1, $perPage = 20, $category = null)
+    public function getBooks($page = 1, $perPage = 20, $category = null, $sort = null)
     {
         $offset = ($page - 1) * $perPage;
 
+        $sql = "SELECT * FROM books";
+        $params = [];
+
         if ($category) {
-            $sql = "SELECT * FROM books WHERE category = :category ORDER BY id DESC LIMIT :limit OFFSET :offset";
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindValue(':category', $category, PDO::PARAM_STR);
-            $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        } else {
-            $sql = "SELECT * FROM books ORDER BY id DESC LIMIT :limit OFFSET :offset";
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $sql .= " WHERE category = :category";
+            $params[':category'] = $category;
         }
 
+        // Add sorting
+        switch ($sort) {
+            case 'price_asc':
+                $sql .= " ORDER BY price ASC";
+                break;
+            case 'price_desc':
+                $sql .= " ORDER BY price DESC";
+                break;
+            case 'title_asc':
+                $sql .= " ORDER BY title ASC";
+                break;
+            case 'title_desc':
+                $sql .= " ORDER BY title DESC";
+                break;
+            default:
+                $sql .= " ORDER BY id DESC";
+        }
+
+        $sql .= " LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($sql);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

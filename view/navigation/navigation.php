@@ -1,12 +1,31 @@
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<!-- Header Navigation -->
+
+<head>
+    <link rel="stylesheet" href="navigation.css">
+</head>
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="index.php">BookStore</a>
+        <a class="navbar-brand" href="index.php">TheBook.PK</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Blog</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                         Categories
@@ -24,11 +43,10 @@
                     </ul>
                 </li>
             </ul>
-            <form class="d-flex" method="GET" action="index.php">
-                <input class="form-control me-2" type="search" name="search" placeholder="Search books..."
-                    value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-                <button class="btn btn-outline-light" type="submit">Search</button>
-            </form>
+            <div class="d-flex">
+                <a href="#" class="btn btn-outline-primary me-2">Sign In</a>
+                <a href="#" class="btn btn-primary">Sign Up</a>
+            </div>
         </div>
     </div>
 </nav>
