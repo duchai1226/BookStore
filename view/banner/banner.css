@@ -16,12 +16,30 @@
     width: 100%;
     height: 400px;
     overflow: hidden;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* Thêm position relative */
 }
 
 .promotion-image {
     width: 100%;
+    /* Thay đổi từ max-width thành width */
     height: 100%;
-    object-fit: cover;
+    /* Thay đổi từ max-height thành height */
+    object-fit: contain;
+    /* Giữ nguyên để tránh bị cắt */
+    object-position: center;
+    /* Đảm bảo ảnh nằm giữa */
+    transition: transform 0.3s ease;
+}
+
+/* Hiệu ứng hover cho ảnh banner */
+.carousel-item:hover .promotion-image {
+    transform: scale(1.02);
+    /* Phóng to nhẹ khi hover */
 }
 
 /* Làm cho banner full-width */

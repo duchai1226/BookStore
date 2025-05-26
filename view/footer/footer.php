@@ -1,13 +1,13 @@
 <!-- Footer -->
 
 <head>
-    <link rel="stylesheet" href="footer/footer.css">
+    <link rel="stylesheet" href="<?php echo viewUrl('footer/footer.css'); ?>">
 </head>
 <footer class="text-light py-5">
     <div class="container">
         <div class="row">
             <div class="col-md-3 mb-4">
-                <h4 class="mb-4">TBC</h4>
+                <h4 class="mb-4">TBS</h4>
                 <p>Discover the latest and greatest in literature with our BOOK STORE, featuring hand-picked
                     bestsellers and emerging authors.</p>
 

@@ -114,10 +114,21 @@ class BookModel
     // Get all categories
     public function getAllCategories()
     {
-        $sql = "SELECT * FROM categories ORDER BY name ASC";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT * FROM categories ORDER BY name ASC";
+            // Kiểm tra kết nối database
+            if (!$this->db) {
+                throw new Exception("Database connection is null");
+            }
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            // Log lỗi
+            error_log('Error in getAllCategories: ' . $e->getMessage());
+            // Trả về mảng trống thay vì gây lỗi
+            return [];
+        }
     }
 
     public function getBooks($page = 1, $perPage = 20, $category = null, $sort = null)

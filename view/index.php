@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../model/BookModel.php';
+require_once __DIR__ . '/../model/CartModel.php';
 require_once __DIR__ . '/../controller/search.php';
 
 $database = new Database();
@@ -72,7 +73,7 @@ $categories = $bookModel->getAllCategories();
 
         <!-- Fixed Action Buttons -->
         <div class="action-buttons-fixed">
-            <button class="btn btn-success rounded-pill"><i class="bi bi-cart"></i> View Cart</button>
+            <button class="btn btn-success rounded-pill view-cart-btn"><i class="bi bi-cart"></i> View Cart</button>
             <button class="btn btn-outline-success rounded-pill">Request a Book</button>
         </div>
 
@@ -85,15 +86,11 @@ $categories = $bookModel->getAllCategories();
                             <p>200+ Authors</p>
                             <p>20k+ Books</p>
                         </div>
-                        <h1>THE BOOK.COM</h1>
+                        <h1>THEBOOKSTORE.COM</h1>
                         <p class="lead">Get into our Store</p>
                         <p>Here every book is a new adventure</p>
 
-                        <form class="d-flex mt-4" method="GET" action="search_page.php">
-                            <input class="form-control me-2" type="search" name="search"
-                                placeholder="Find your book here..." value="">
-                            <button class="btn btn-primary" type="submit">Search</button>
-                        </form>
+
                     </div>
                     <div class="col-md-6 text-center">
                         <img src="images/huit/huit.png" alt="Person reading a book" class="img-fluid hero-image-small">
@@ -168,7 +165,8 @@ $categories = $bookModel->getAllCategories();
                                 <div class="d-flex justify-content-between">
                                     <a href="book-details.php?id=<?php echo $book['id']; ?>"
                                         class="btn btn-outline-primary">View Details</a>
-                                    <button class="btn btn-success">Add to Cart</button>
+                                    <button class="btn btn-success add-to-cart"
+                                        data-book-id="<?php echo $book['id']; ?>">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
